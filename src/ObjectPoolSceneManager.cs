@@ -89,6 +89,13 @@ namespace DCFApixels.ObjectPools.Internal
         {
             int id = pool._id;
             if (id == 0) { Throw.InvalidPoolID(); }
+            _recycledIds.Enqueue(id);
+            int denseID = _mapping[id];
+            int lastDenseID = --_poolsCount;
+
+            var lastPool = _pools[lastDenseID];
+            _pools[denseID] = lastPool;
+            _mapping[lastPool._id] = denseID;
         }
 
         private void LateUpdate()
