@@ -1,0 +1,22 @@
+{
+    "name": "com.dcfa_pixels.unity-object-pools",
+    "author": 
+    {
+        "name": "DCFApixels",
+        "url": "https://github.com/DCFApixels"
+    },
+    "displayName": "ObjectPools",
+    "description": "C# Entity Component System Framework",
+    "unity": "2021.2",
+    "version": "0.6.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/DCFApixels/Unity-ObjectPools.git"
+    },
+    "dependencies": { },
+    "keywords":
+    [
+        "pool",
+        "unity"
+    ]
+}

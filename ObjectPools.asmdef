@@ -1,6 +1,6 @@
 {
-    "name": "DCFApixels.Pools",
-    "rootNamespace": "DCFApixels.Pools",
+    "name": "DCFApixels.ObjectPools",
+    "rootNamespace": "DCFApixels.ObjectPools",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
