@@ -5,7 +5,6 @@ using System.Runtime.CompilerServices;
 using DCFApixels.ObjectPools.Internal;
 using System;
 
-
 #if UNITY_EDITOR
 using UnityEditor;
 #endif

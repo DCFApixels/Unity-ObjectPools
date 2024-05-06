@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace DCFApixels.ObjectPools
+namespace DCFApixels.ObjectPools.Internal
 {
     internal static class Throw
     {
