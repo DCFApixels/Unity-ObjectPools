@@ -16,7 +16,7 @@ namespace DCFApixels.ObjectPools.Editors
         {
             GenerateAllPools(menuCommand);
         }
-        [MenuItem("Assets/" + Consts.PROJECT_NAME + "/Generate Pool", true, 10)]
+        [MenuItem("Assets/" + Consts.PROJECT_NAME + "/Generate Pool", true)]
         public static bool ValidateGenerateAllPools_Asset(MenuCommand menuCommand)
         {
             return ValidateGenerateAllPools(menuCommand);

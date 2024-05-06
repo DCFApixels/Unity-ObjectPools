@@ -136,7 +136,7 @@ namespace DCFApixels.ObjectPools.Editors
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
-            if(TargetsCount == 1)
+            if (TargetsCount == 1)
             {
                 EditorGUILayout.Toggle("Is In Pool", Target.IsInPool);
             }

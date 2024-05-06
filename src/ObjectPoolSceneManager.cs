@@ -42,8 +42,8 @@ namespace DCFApixels.ObjectPools.Internal
         {
             if (_instance == null)
             {
-                if(_instance)
-                _instance = this;
+                if (_instance)
+                    _instance = this;
                 return;
             }
             if (_instance != this)
@@ -65,19 +65,19 @@ namespace DCFApixels.ObjectPools.Internal
             pool.transform.SetParent(Instance.transform);
 
             int newId;
-            if(_recycledIds.Count > 0)
+            if (_recycledIds.Count > 0)
             {
                 newId = _recycledIds.Dequeue();
             }
             else
             {
                 newId = _idIncrement++;
-                if(newId >= _mapping.Length)
+                if (newId >= _mapping.Length)
                 {
                     Array.Resize(ref _mapping, _mapping.Length << 1);
                 }
             }
-            if(_poolsCount >= _pools.Length)
+            if (_poolsCount >= _pools.Length)
             {
                 Array.Resize(ref _pools, _pools.Length << 1);
             }
@@ -109,7 +109,7 @@ namespace DCFApixels.ObjectPools.Internal
 
         private void OnDestroy()
         {
-            
+
         }
     }
 }

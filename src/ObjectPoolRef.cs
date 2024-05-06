@@ -6,7 +6,7 @@ using UnityEditor;
 
 namespace DCFApixels.ObjectPools
 {
-    [CreateAssetMenu(fileName = nameof(ObjectPoolRef), menuName = "Pools/" + nameof(ObjectPoolRef), order = 1)]
+    [CreateAssetMenu(fileName = nameof(ObjectPoolRef), menuName = Consts.PROJECT_NAME + "/" + nameof(ObjectPoolRef), order = 1)]
     public class ObjectPoolRef : ScriptableObject, IObjectPool
     {
         [SerializeField]
@@ -99,12 +99,16 @@ namespace DCFApixels.ObjectPools
         #endregion
 
         #region Other
+        public void InitPool()
+        {
+            _ = Instance;
+        }
         [MethodImpl(MethodImplOptions.NoInlining)]
         private void FindOrCreateInstance()
         {
 #if UNITY_EDITOR
             var pools = FindObjectsOfType<ObjectPool>(true);
-            if(pools.Length > 0)
+            if (pools.Length > 0)
             {
                 _instance = pools[0];
                 return;

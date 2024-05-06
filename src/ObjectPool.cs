@@ -208,11 +208,11 @@ namespace DCFApixels.ObjectPools
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal void InternalUpdate(float deltaTime)
         {
-            if ((_isAutoCleaning == false) || 
-                (_storedUnits.Count <= _minDisabledInstances) || 
-                (_allUnitsCount <= _minAllInstances)) 
-            { 
-                return; 
+            if ((_isAutoCleaning == false) ||
+                (_storedUnits.Count <= _minDisabledInstances) ||
+                (_allUnitsCount <= _minAllInstances))
+            {
+                return;
             }
 
             _cleanTimer += deltaTime;
