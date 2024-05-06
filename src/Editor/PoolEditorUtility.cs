@@ -7,11 +7,22 @@ namespace DCFApixels.ObjectPools.Editors
 {
     using System.IO;
     using UnityEditor;
-    public static class PoolEditorUtility
+    internal static class PoolEditorUtility
     {
         private const string DEFAULT_FOLDER_NAME = "GeneratedPools";
 
-        [MenuItem("GameObject/Pool/Generate Pool")]
+        [MenuItem("Assets/" + Consts.PROJECT_NAME + "/Generate Pool")]
+        public static void GenerateAllPools_Asset(MenuCommand menuCommand)
+        {
+            GenerateAllPools(menuCommand);
+        }
+        [MenuItem("Assets/" + Consts.PROJECT_NAME + "/Generate Pool", true, 10)]
+        public static bool ValidateGenerateAllPools_Asset(MenuCommand menuCommand)
+        {
+            return ValidateGenerateAllPools(menuCommand);
+        }
+
+        [MenuItem("GameObject/" + Consts.PROJECT_NAME + "/Generate Pool")]
         public static void GenerateAllPools(MenuCommand menuCommand)
         {
             if (Selection.objects.Length > 1)
@@ -28,8 +39,8 @@ namespace DCFApixels.ObjectPools.Editors
                 GenerateOnePool(item.transform);
             }
         }
-        [MenuItem("GameObject/Pool/Generate Pool", true, 10)]
-        static bool ValidateGenerateAllPools(MenuCommand menuCommand)
+        [MenuItem("GameObject/" + Consts.PROJECT_NAME + "/Generate Pool", true, 10)]
+        public static bool ValidateGenerateAllPools(MenuCommand menuCommand)
         {
             return Selection.activeGameObject != null; //&& EditorUtility.IsPersistent(Selection.activeGameObject);
         }
@@ -63,7 +74,9 @@ namespace DCFApixels.ObjectPools.Editors
         private static Transform ConvertObjectToPrefab(Transform root, out string path)
         {
             if (!Directory.Exists("Assets/" + DEFAULT_FOLDER_NAME))
+            {
                 AssetDatabase.CreateFolder("Assets", DEFAULT_FOLDER_NAME);
+            }
 
 
             string localPath = "Assets/" + DEFAULT_FOLDER_NAME + "/" + root.name;
@@ -99,18 +112,36 @@ namespace DCFApixels.ObjectPools.Editors
         private static void GenerateOnePool(ObjectPoolUnit unitPrefab, string path)
         {
             //unitPrefab.SetRefs_Editor();
-
             int separatorPosition = Mathf.Max(path.LastIndexOf("/"), path.LastIndexOf("\\"));
-            if (separatorPosition <= -1)
-                throw new Exception(path);
+            if (separatorPosition <= -1) { throw new Exception(path); }
 
-            string folderPath = path = path.Substring(0, separatorPosition);
+            string folderPath = path.Substring(0, separatorPosition);
+            string fileNameWithoutType = unitPrefab.name;
+            string newFolderPath;
 
-            separatorPosition = Mathf.Max(path.IndexOf("Assets"), path.LastIndexOf("Assets"));
-            if (separatorPosition <= -1)
-                throw new Exception(path);
-            separatorPosition += "Assets".Length;
-            string folderPathInAssets = folderPath.Substring(separatorPosition);
+            separatorPosition = Mathf.Max(folderPath.LastIndexOf("/"), folderPath.LastIndexOf("\\")) + 1;
+            bool isSelfFolder = true;
+            for (int i = 0; i < fileNameWithoutType.Length; i++)
+            {
+                if (fileNameWithoutType[i] != folderPath[separatorPosition + i])
+                {
+                    isSelfFolder = false;
+                }
+            }
+            if (isSelfFolder)
+            {
+                newFolderPath = folderPath;
+            }
+            else
+            {
+                newFolderPath = AssetDatabase.GenerateUniqueAssetPath(folderPath + "/" + fileNameWithoutType);
+                if (AssetDatabase.IsValidFolder(newFolderPath) == false)
+                {
+                    separatorPosition = Mathf.Max(newFolderPath.LastIndexOf("/"), newFolderPath.LastIndexOf("\\")) + 1;
+                    AssetDatabase.CreateFolder(folderPath, newFolderPath.Substring(separatorPosition));
+                }
+                AssetDatabase.MoveAsset(path, newFolderPath + "/" + unitPrefab.name + ".prefab");
+            }
 
             #region Make pool instance
             ObjectPool newPool = new GameObject().AddComponent<ObjectPool>();
@@ -127,19 +158,14 @@ namespace DCFApixels.ObjectPools.Editors
             #endregion
 
             #region Make pool instance prefab
-            string newPoolPrefabPath = path + "/" + newPool.name + ".prefab";
+            string newPoolPrefabPath = newFolderPath + "/" + newPool.name + ".prefab";
             newPoolPrefabPath = AssetDatabase.GenerateUniqueAssetPath(newPoolPrefabPath);
             var newPoolPrefab = PrefabUtility.SaveAsPrefabAssetAndConnect(newPool.gameObject, newPoolPrefabPath, InteractionMode.AutomatedAction).GetComponent<ObjectPool>();
             #endregion
 
             #region Make ref
             ObjectPoolRef @ref = ScriptableObject.CreateInstance<ObjectPoolRef>();
-            if (AssetDatabase.IsValidFolder(folderPath) == false)
-            {
-                Directory.CreateDirectory(Application.dataPath + folderPathInAssets);
-                AssetDatabase.Refresh();
-            }
-            AssetDatabase.CreateAsset(@ref, folderPath + "/" + newPoolPrefab.name + "Ref.asset");
+            AssetDatabase.CreateAsset(@ref, newFolderPath + "/" + newPoolPrefab.name + "Ref.asset");
             AssetDatabase.Refresh();
 
             newPoolPrefab.SetRef_Editor(@ref);
